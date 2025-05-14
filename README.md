@@ -62,21 +62,8 @@ The chart below shows how CPU usage per process changes over time, segmented by 
 
 ---
 
-## 🧠 Future Applications
-
-This labeled dataset can be used for:
-- Supervised learning to classify system load
-- Training RL agents to simulate or optimize OS scheduling
-- Benchmarking resource management strategies
-
----
-
 ## 📁 Files
 
-- `mac_syslog_labeled_clean.csv`: Cleaned, labeled, normalized dataset
+- `mac_syslog.csv`: Cleaned, labeled, normalized dataset
 - `output.png`: Visualization image
 - `log_system.py`: Python script to collect data using `psutil`
-
----
-
-📌 Feel free to fork or adapt for Linux or Windows systems, or extend it with more resource types (GPU, network packets, etc.).
