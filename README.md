@@ -37,12 +37,12 @@ cpu_process, memory_process: Resource usage per process
 # 📦 Synthetic Workload Timeline
 |Stage |Start |Time	|Activity	|Label|
 |------|------|-----|---------|-----||
-|1  |00:31	|System idle	|idle
-|2	|00:34	|20x yes CPU stress	|high_cpu
-|3	|00:38	|Open Chrome, Xcode	|high_mem
-|4	|00:42	|Copy & zip large files	|disk_io
-|5	|00:45	|Watch video, download file	|network_load
-|6	|00:48	|Stop all apps → idle again	|idle
+|1  |00:31	|System idle	|idle|
+|2	|00:34	|20x yes CPU stress	|high_cpu|
+|3	|00:38	|Open Chrome, Xcode	|high_mem|
+|4	|00:42	|Copy & zip large files	|disk_io|
+|5	|00:45	|Watch video, download file	|network_load|
+|6	|00:48	|Stop all apps → idle again	|idle|
 
 # 🧹 Data Preprocessing
 Rows with missing process info were removed
