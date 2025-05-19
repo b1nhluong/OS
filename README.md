@@ -71,7 +71,6 @@ Data is saved as `.csv` for further analysis and ML training.
 
 ## 📁 Files
 
-- `raw.csv`: Raw data
 - `linux_syslog_labeled.csv`: Raw data with auto-assigned labels
 - `linux_syslog_balanced.csv`: Balanced dataset for ML training
 - `collect_log.py`: Python script to periodically collect system telemetry data including CPU usage, memory usage, process-level statistics, load averages, I/O bytes, context switches, and nice values. Uses libraries like `psutil` to extract metrics and logs data in CSV format for further processing.
