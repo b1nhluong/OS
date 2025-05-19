@@ -1,70 +1,78 @@
-# 📊 System Load Monitoring on macOS
+# 📊 OS Scheduler Baseline Policy Using Offline Machine Learning
 
 ## 🔍 Overview
 
-This project collects, labels, and prepares real system telemetry data from macOS for use in Machine Learning (ML) and Reinforcement Learning (RL) applications, particularly for operating system scheduling simulations.
+This project collects, labels, and preprocesses system telemetry data from Ubuntu ARM64 running in UTM on macOS M1, aimed at building a baseline scheduling policy via offline machine learning.
 
-It includes:
-- Data logging with Python (`psutil`)
-- Creating synthetic workloads (CPU, memory, I/O, network)
-- Auto-labeling system state based on timeline
-- Preprocessing & normalization
-- Visualization
+Key components include:
+- System data collection with Python scripts
+- Generating synthetic workloads using `stress-ng`
+- Auto-labeling system states based on workload schedule
+- Data cleaning, normalization, and balancing for ML
 
 ---
 
 ## 🛠 Tools Used
 
-- Python + `psutil`
-- Shell (`yes > /dev/null &`) to simulate CPU load
-- `pandas`, `matplotlib`, `sklearn`
-- macOS Terminal
+- Ubuntu Desktop ARM64 in UTM on macOS M1
+- Python (`pandas`, `scikit-learn`, `imbalanced-learn`)
+- `stress-ng` for workload simulation
+- Shell scripts for workload orchestration
 
 ---
 
 ## 🧪 Data Collection Process
 
-Data is logged in real-time every 5 seconds. Each entry includes:
+System metrics are collected periodically during a 10-minute workload schedule with stages:
 
-- `timestamp`: Time of recording
-- `cpu_percent`, `memory_percent`: System-level usage
-- `pid`, `name`: Process info
-- `cpu_process`, `memory_process`: Normalized per-process resource usage
+- Total CPU and RAM usage
+- Process-level CPU and RAM usage
+- Load averages (1, 5, 15 min)
+- I/O read/write bytes
+- Context switches and nice values
+
+Data is saved as `.csv` for further analysis and ML training.
 
 ---
 
 ## 📦 Synthetic Workload Timeline
 
-| Stage | Start Time          | Activity                         | Label          |
-|-------|---------------------|----------------------------------|----------------|
-| 1     | 13:46:53            | System idle                      | idle           |
-| 2     | 13:47:30            | 20x `yes` CPU stress             | high_cpu       |
-| 3     | 13:48:30            | Open Chrome, Xcode, VSCode       | high_mem       |
-| 4     | 13:49:30            | Copy and compress large files    | disk_io        |
-| 5     | 13:50:30            | Watch video, download files      | network_load   |
-| 6     | 13:51:30            | Mix all workload types           | mixed          |
-| 7     | 13:52:30            | Stop all apps → idle again       | idle           |
+| Stage | Time (minutes) | Workload Type               | Label        |
+|-------|----------------|----------------------------|--------------|
+| 1     | 0–1            | Idle                       | idle         |
+| 2     | 1–2            | CPU-bound                  | cpu-heavy    |
+| 3     | 2–3            | RAM-bound                  | ram-heavy    |
+| 4     | 3–4            | Mixed CPU + RAM            | mixed        |
+| 5     | 4–5            | Idle                       | idle         |
+| 6     | 5–6            | I/O-heavy                  | io-heavy     |
+| 7     | 6–7            | Mixed (CPU + RAM + I/O)    | mixed-heavy  |
+| 8     | 7–8            | RAM-heavy                  | ram-heavy    |
+| 9     | 8–9            | CPU-heavy                  | cpu-heavy    |
+| 10    | 9–10           | Idle                       | idle         |
 
 ---
 
 ## 🧹 Data Preprocessing
 
-- Rows with missing process data were removed
-- `cpu_process` and `memory_process` were normalized to [0, 1] using `MinMaxScaler`
-- Labels were added automatically by matching `timestamp` with predefined workload phases
+- Aggregated and merged logs by timestamp
+- Removed outliers beyond 1st and 99th percentiles in numeric features
+- Normalized numeric features using Min-Max scaling
+- Automatically labeled logs based on workload time windows
+- Balanced dataset via SMOTE to address class imbalance
 
 ---
 
-## 📈 Visualization
+## 📈 Dataset Summary
 
-The chart below shows how CPU usage per process changes over time, segmented by labeled workload phases:
-
-![System Load Over Time](output.png)
+- Final dataset contains ~1,045 samples evenly distributed across 6 labels.
+- Data saved as `linux_syslog_balanced.csv` ready for ML model training.
 
 ---
 
 ## 📁 Files
 
-- `mac_syslog.csv`: Cleaned, labeled, and normalized dataset
-- `output.png`: Visualization image
-- `log_system.py`: Python script to collect data using `psutil`
+- `linux_syslog_labeled.csv`: Raw data with auto-assigned labels
+- `linux_syslog_balanced.csv`: Balanced dataset for ML training
+- `collect_log.py`: Python script to periodically collect system telemetry data including CPU usage, memory usage, process-level statistics, load averages, I/O bytes, context switches, and nice values. Uses libraries like `psutil` to extract metrics and logs data in CSV format for further processing.
+
+---
